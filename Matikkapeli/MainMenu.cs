@@ -42,7 +42,8 @@ namespace Matikkapeli
 
         private void achievements_Click(object sender, EventArgs e)
         {
-
+            Palkinnot palkinnot = new Palkinnot();
+            palkinnot.ShowDialog();
         }
 
         private void logout_Click(object sender, EventArgs e)

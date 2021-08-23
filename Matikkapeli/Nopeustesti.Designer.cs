@@ -144,8 +144,6 @@ namespace Matikkapeli
             // 
             // highscores
             // 
-            this.highscores.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
             this.highscores.FormattingEnabled = true;
             this.highscores.ItemHeight = 15;
             this.highscores.Location = new System.Drawing.Point(12, 12);

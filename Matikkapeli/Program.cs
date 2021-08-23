@@ -9,7 +9,9 @@ namespace Matikkapeli
 {
     static class Program
     {
-        public static string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\skype\source\repos\Matikkapeli\Matikkapeli\Database1.mdf;Integrated Security=True";
+        //public static string databaseFile = @"C:\Users\skype\source\repos\Matikkapeli\Matikkapeli\Database1.mdf";
+        public static string databaseFile = @"C:\GitHub\Matikkapeli\Matikkapeli\Database1.mdf";
+        public static string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + databaseFile + ";Integrated Security=True";
 
         public static MainMenu menu;
         public static LogIn login;

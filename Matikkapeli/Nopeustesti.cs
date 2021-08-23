@@ -30,6 +30,7 @@ namespace Matikkapeli
             connectionString = Program.connectionString;
 
             answer.Enabled = false;
+            LoadHighscores();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -95,20 +96,53 @@ namespace Matikkapeli
                     {
                         connection.Open();
 
+                        float points = ((float)calculations / 60f * 100f);
+
                         SqlCommand command = new SqlCommand($"INSERT INTO [Points](User_id, Points, Time) VALUES (@u, @p, @t);", connection);
                         command.Parameters.AddWithValue("@u", Program.login.user_id);
-                        command.Parameters.AddWithValue("@p", ((float)calculations / 60f * 100f));
+                        command.Parameters.AddWithValue("@p", points);
                         command.Parameters.AddWithValue("@t", DateTime.Now);
                         //int result = command.ExecuteNonQuery();
                         command.ExecuteScalar();
+
+                        connection.Close();
+
+                        List<int> trophiesAchieved = new List<int>();
+
+                        connection.Open();
+
+                        SqlCommand commandT = new SqlCommand($"SELECT * FROM [User_Trophies] WHERE [User_id] = " + Program.login.user_id + ";", connection);
+                        //int result = command.ExecuteNonQuery();
+                        using (SqlDataReader reader = commandT.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                trophiesAchieved.Add(int.Parse(reader["Trophy_id"].ToString()));
+                            }
+                        }
+
+                        connection.Close();
+
+                        if (points >= 40f && !trophiesAchieved.Contains(1))
+                        {
+                            Achieve(1);
+                        }
+                        if (points >= 50f && !trophiesAchieved.Contains(2))
+                        {
+                            Achieve(2);
+                        }
+                        if (points >= 60f && !trophiesAchieved.Contains(3))
+                        {
+                            Achieve(3);
+                        }
+
                         timeText.Text += "\nPisteiden lähetys onnistui.";
+                        LoadHighscores();
                     }
                     catch (Exception ex)
                     {
                         MessageBox.Show("Tapahtui virhe yhdistäessä tietokantaan:\n" + ex.Message);
                     }
-
-                    connection.Close();
                 }
             }
         }
@@ -173,25 +207,85 @@ namespace Matikkapeli
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
+                bool topScore = false;
+
                 try
                 {
                     connection.Open();
 
-                    SqlCommand command = new SqlCommand($"SELECT * FROM [Points] ORDER BY Points ASC;", connection);
+                    SqlCommand command = new SqlCommand($"SELECT * FROM [Points] INNER JOIN [Users] ON [Points].User_id = [Users].Id ORDER BY [Points].Points DESC;", connection);
                     //int result = command.ExecuteNonQuery();
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        if (reader.Read())
+                        int i = 0;
+                        while (reader.Read())
                         {
-                            highscores.Items.Add(((float)reader["Points"]).ToString("0.00"));
+                            if (i == 0 && int.Parse(reader["User_id"].ToString()) == Program.login.user_id)
+                                topScore = true;
+
+                            highscores.Items.Add(reader["Username"] + " - " + float.Parse(reader["Points"].ToString()).ToString("0.00"));
+                            i++;
                         }
-                        else
-                            MessageBox.Show("Ennätyksiä ei löydetty");
                     }
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Tapahtui virhe yhdistäessä tietokantaan:\n" + ex.Message);
+                }
+
+                connection.Close();
+
+                if (topScore)
+                {
+                    List<int> trophiesAchieved = new List<int>();
+
+                    connection.Open();
+
+                    SqlCommand commandT = new SqlCommand($"SELECT * FROM [User_Trophies] WHERE [User_id] = " + Program.login.user_id + ";", connection);
+                    //int result = command.ExecuteNonQuery();
+                    using (SqlDataReader reader = commandT.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            trophiesAchieved.Add(int.Parse(reader["Trophy_id"].ToString()));
+                        }
+                    }
+
+                    connection.Close();
+
+                    if (!trophiesAchieved.Contains(0))
+                    {
+                        Achieve(0);
+                    }
+                }
+            }
+        }
+
+        private void Achieve(int id)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                SqlCommand command2 = new SqlCommand($"INSERT INTO [User_Trophies](Trophy_id, User_id, Time) VALUES (@t, @u, @i);", connection);
+                command2.Parameters.AddWithValue("@t", id);
+                command2.Parameters.AddWithValue("@u", Program.login.user_id);
+                command2.Parameters.AddWithValue("@i", DateTime.Now);
+                //int result = command.ExecuteNonQuery();
+                command2.ExecuteScalar();
+
+                connection.Close();
+
+                connection.Open();
+
+                SqlCommand commandRead = new SqlCommand($"SELECT * FROM [Trophies] WHERE [Id] = " + id.ToString() + ";", connection);
+                //int result = command.ExecuteNonQuery();
+                using (SqlDataReader reader = commandRead.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        MessageBox.Show("Sait saavutuksen!\n" + reader["Name"].ToString());
+                    }
                 }
 
                 connection.Close();

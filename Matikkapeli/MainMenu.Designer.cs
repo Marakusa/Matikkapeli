@@ -63,7 +63,7 @@ namespace Matikkapeli
             this.achievements.Name = "achievements";
             this.achievements.Size = new System.Drawing.Size(200, 51);
             this.achievements.TabIndex = 2;
-            this.achievements.Text = "Saavutukset";
+            this.achievements.Text = "Palkinnot";
             this.achievements.UseVisualStyleBackColor = true;
             this.achievements.Click += new System.EventHandler(this.achievements_Click);
             // 
