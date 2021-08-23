@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -10,7 +11,7 @@ namespace Matikkapeli
     static class Program
     {
         //public static string databaseFile = @"C:\Users\skype\source\repos\Matikkapeli\Matikkapeli\Database1.mdf";
-        public static string databaseFile = @"C:\GitHub\Matikkapeli\Matikkapeli\Database1.mdf";
+        public static string databaseFile = Path.GetDirectoryName(Application.ExecutablePath) + @"\Database1.mdf";
         public static string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + databaseFile + ";Integrated Security=True";
 
         public static MainMenu menu;

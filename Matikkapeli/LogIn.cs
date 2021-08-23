@@ -57,14 +57,14 @@ namespace Matikkapeli
 
                     if (tunnus.Text != "" && salasana.Text != "")
                         LogInUser(tunnus.Text, salasana.Text);
+
+                    connection.Close();
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Failed to connect to database: " + ex.Message);
                     quit = true;
                 }
-
-                connection.Close();
             }
 
             if (quit)
@@ -116,14 +116,14 @@ namespace Matikkapeli
                         }
                         else
                             MessageBox.Show("Käyttäjää ei löydetty");
+
+                        connection.Close();
                     }
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Tapahtui virhe yhdistäessä tietokantaan:\n" + ex.Message);
                 }
-
-                connection.Close();
             }
 
             button1.Enabled = true;

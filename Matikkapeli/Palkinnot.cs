@@ -37,13 +37,13 @@ namespace Matikkapeli
                             listView1.Items.Add(item);
                         }
                     }
+
+                    connection.Close();
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Tapahtui virhe yhdistäessä tietokantaan:\n" + ex.Message);
                 }
-
-                connection.Close();
 
                 try
                 {
@@ -58,6 +58,8 @@ namespace Matikkapeli
                             trophiesAchieved.Add(int.Parse(reader["Trophy_id"].ToString()));
                         }
                     }
+
+                    connection.Close();
                 }
                 catch (Exception ex)
                 {
